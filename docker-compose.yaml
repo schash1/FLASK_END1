@@ -6,20 +6,25 @@ services:
       dockerfile: ./Dockerfile
       context: .
     environment:
-      DATABASE_URL: postgresql://user:password@database:5432/blog
+      SQLALCHEMY_DATABASE_URI: postgresql://user:password@pg:5432/
+      CONFIG_NAME: DevConfig
+      restart: always
     ports:
-    - 8080:5000
+    - 5005:5000
     depends_on:
-      - database
+      - db
 
-  database:
+  db:
     image: postgres:12.7-alpine
     environment:
       POSTGRES_DB: blog
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data
     volumes:
     - pgdata:/var/lib/postgresql/data
+    privileged: true
+    restart: always
     ports:
     - 5432:5432
 
